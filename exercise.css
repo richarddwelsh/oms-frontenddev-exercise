@@ -1,0 +1,7 @@
+#map rect {
+    fill: hsl(240, 48%, 89%)
+}
+
+svg#map-holder {
+    background-color: hsl(240, 48%, 89%);
+}
