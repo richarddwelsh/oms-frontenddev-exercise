@@ -3,6 +3,8 @@ let countryData, sourceData, data = {};
 
 let path; // D3 map projection function
 let countriesGroup; // D3 selection
+let catSelectsContainer; // D3 selection
+let yearMin, yearMax;
 
 // define some shorter identifiers for the commodity categories (used in CSS classnames, etc.)
 let categories = {
@@ -16,10 +18,10 @@ let categories = {
         label: "Starchy Roots", hue: 72,
     },
     "Sugar": {
-        label: "Sugar", hue: 108,
+        label: "Sugar", hue: 106,
     },
     "OilFat": {
-        label: "Oils & Fats", hue: 144,
+        label: "Oils & Fats", hue: 160,
     },
     "Meat": {
         label: "Meat", hue: 180,
@@ -64,7 +66,7 @@ let nameMappings = {
 
 // initial seelections
 let catSelect = "Alcol";
-let yearSelect = 2000;
+let yearSelect = 1971;
 
 
 // main code block will run when both source data sets have been retrieved
@@ -110,16 +112,32 @@ Promise.all([
             categories[catId].max = d3.max(allData);
         }
 
+        yearMin = d3.min(sourceData.map(row => Number(row.Year)));
+        yearMax = d3.max(sourceData.map(row => Number(row.Year)));
+        d3.select('#year-slider input').attr('min', yearMin).attr('max', yearMax).on('input', yearInputHandler);
 
-       // plot the map
-       // lots of this is adapted from https://bl.ocks.org/andybarefoot/765c937c8599ef540e1e0b394ca89dc5 
+        // category selectors
+        catSelectsContainer = d3.select("#cat-selectors");
+        let selects = catSelectsContainer.selectAll("div").data(
+            Object.entries(categories).map(([key, value]) => ({key: key, label: value.label, hue: value.hue})) // transform objetc to array
+        );
+
+        let selectsEnter = selects.enter()
+            .append('div')
+            .attr('class', d => `cat-select cat-${d.key}` + (d.key === catSelect ? " selected" : ""))
+            .attr('style', d => `border-color: hsl(${d.hue}, 75%, 40%); color: hsl(${d.hue}, 75%, 30%); background-color: hsl(${d.hue}, 75%, 95%)`)
+            .text(d => d.label)
+            .on('click', categoryClickHandler);
+
+        // plot the map
+        // lots of this is adapted from https://bl.ocks.org/andybarefoot/765c937c8599ef540e1e0b394ca89dc5 
         
         // DEFINE VARIABLES
         // Define size of map group
         // Full world map is 2:1 ratio
         // Using 12:5 because we will crop top and bottom of map
-        w = 1000;
-        h = 5/12*1000;
+        w = 1100;
+        h = 5/12*1100;
 
         // DEFINE FUNCTIONS/OBJECTS
         // Define map projection
@@ -192,12 +210,12 @@ function drawMap(year, category) {
         // ENTER + UPDATE (what to do when creating OR updating data elements) - update => change fill colour of country
         countries.merge(countriesEnter)
             .attr("fill", d => {
-                if (d.dietCompData[yearSelect] && d.dietCompData[yearSelect][catSelect]) {
-                    let pc = d.dietCompData[yearSelect][catSelect] * 100 / categories[catSelect].max ;
-                    return `hsl(${categories[catSelect].hue},75%,${Math.floor(100 - pc)}%)`;
+                if (d.dietCompData[year] && d.dietCompData[year][category]) {
+                    let pc = d.dietCompData[year][category] * 100 / categories[category].max ;
+                    return `hsl(${categories[category].hue},75%,${Math.floor(100 - pc)}%)`;
                 }
                 else
-                    return "hsl(0, 0%, 70%)"
+                    return "hsl(0, 0%, 70%)"; // no data 
             })
 }
 
@@ -211,4 +229,17 @@ function countryMouseoverHandler(d, i) {
 
 function countryMouseoutHandler(d, i) {
     //console.log(d.properties.name)
+}
+
+function categoryClickHandler(d, i) {
+    catSelect = d.key;
+    drawMap(yearSelect, catSelect);
+    
+    $('.cat-select').removeClass('selected')
+    $('.cat-select.cat-' + d.key).addClass('selected')
+}
+
+function yearInputHandler() {
+    yearSelect = ($(this).val());
+    drawMap(yearSelect, catSelect);
 }

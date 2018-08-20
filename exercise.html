@@ -6,12 +6,17 @@
         <title>Diet compositions by commodity categories</title>
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <link href="https://fonts.googleapis.com/css?family=Abril+Fatface|Yanone+Kaffeesatz:200" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet"/>
         <link rel="stylesheet" href="exercise.css" />
     </head>
     <body>
+        <div id="cat-selectors"></div>
         <svg id="map-holder"></svg>
-
+        <div id="year-slider">
+            <input type="range" min="1900" max="2050" value="1971" />
+        </div>
+        
+        
         <script src="exercise.js"></script>
     </body>
 </html> 

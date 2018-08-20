@@ -1,7 +1,41 @@
+body {
+    font-family: Abel;
+}
+
 #map rect {
     fill: hsl(240, 0%, 50%)
 }
 
 svg#map-holder {
     background-color: hsl(240, 0%, 50%);
+}
+
+#cat-selectors {
+/*     text-align: center; */
+}
+
+.cat-select {
+    display: inline-block;
+    border-width: 1pt;
+    border-style: solid;
+    margin: 8pt 3pt;
+    border-radius: 1.3em;
+    padding: 0.3em 0.8em;
+    cursor: pointer;
+}
+
+.cat-select.selected {
+    background-color: white !important;
+    border-width: 2pt;
+    margin-left: 2pt; margin-right: 2pt;
+}
+
+.cat-select:hover {
+    background-color: white !important;
+}
+
+#year-slider input {
+    width: 1100px;
+    padding:  0;
+    margin: 0;
 }
