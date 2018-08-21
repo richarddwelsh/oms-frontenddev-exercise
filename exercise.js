@@ -4,7 +4,7 @@ let countryData, sourceData, data = {};
 let path; // D3 map projection function
 let countriesGroup; // D3 selection
 let catSelectsContainer; // D3 selection
-let yearMin, yearMax;
+let yearMin, yearMax, yearScale;
 
 // define some shorter identifiers for the commodity categories (used in CSS classnames, etc.)
 let categories = {
@@ -114,7 +114,11 @@ Promise.all([
 
         yearMin = d3.min(sourceData.map(row => Number(row.Year)));
         yearMax = d3.max(sourceData.map(row => Number(row.Year)));
+
         d3.select('#year-slider input').attr('min', yearMin).attr('max', yearMax).on('input', yearInputHandler);
+        yearScale = d3.scaleLinear()
+            .domain([yearMin, yearMax]).range([10, 1095]);
+        moveYearLabel(yearSelect);
 
         // category selectors
         catSelectsContainer = d3.select("#cat-selectors");
@@ -241,5 +245,10 @@ function categoryClickHandler(d, i) {
 
 function yearInputHandler() {
     yearSelect = ($(this).val());
+    moveYearLabel(yearSelect);
     drawMap(yearSelect, catSelect);
+}
+
+function moveYearLabel(year) {
+    $("#year-slider svg text").attr("x", yearScale(year)).text(year);
 }

@@ -34,8 +34,16 @@ svg#map-holder {
     background-color: white !important;
 }
 
+#year-slider {
+    width: 1100px;
+}
+
 #year-slider input {
     width: 1100px;
     padding:  0;
     margin: 0;
+}
+
+#year-slider svg text {
+    font-size: 12pt;
 }
